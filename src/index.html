@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apex Technical Ventures Inc. | Zero-Trust Cloud Architecture & Sovereign AI</title>
+  <meta name="description" content="Elite B2B IT architecture, zero-trust cloud security hardening, and air-gapped sovereign AI consulting based in Toronto, ON." />
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg-carbon: #0B0F17;
+      --bg-terminal: #080C14;
+      --surface-glass: rgba(15, 23, 42, 0.65);
+      --surface-glass-hover: rgba(20, 32, 58, 0.78);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-azure: rgba(0, 120, 212, 0.45);
+      --azure-primary: #0078D4;
+      --azure-light: #2B88D8;
+      --azure-glow: rgba(0, 120, 212, 0.08);
+      --emerald-primary: #10B981;
+      --emerald-neon: #00E6A2;
+      --text-white: #E2E8F0;
+      --text-bright: #F8FAFC;
+      --text-slate: #94A3B8;
+      --text-muted: #64748B;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --max-width: 1280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-carbon);
+      color: var(--text-white);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: var(--bg-carbon);
+      background-image:
+        radial-gradient(circle at 15% 15%, rgba(0, 120, 212, 0.11) 0%, transparent 45%),
+        radial-gradient(circle at 85% 35%, rgba(0, 120, 212, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 50% 85%, rgba(16, 185, 129, 0.05) 0%, transparent 45%),
+        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+      background-position: center top;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Typography & Shared Utilities */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Glassmorphic Card Base */
+    .glass-card {
+      background: var(--surface-glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 0%), rgba(0, 120, 212, 0.1), transparent 40%);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      pointer-events: none;
+    }
+
+    .glass-card:hover {
+      background: var(--surface-glass-hover);
+      border-color: var(--border-azure);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.65), 0 0 28px 0 rgba(0, 120, 212, 0.14);
+    }
+
+    .glass-card:hover::before {
+      opacity: 1;
+    }
+
+    /* 1. HEADER & LIVE TELEMETRY BAR */
+    .telemetry-topbar {
+      background: rgba(8, 12, 20, 0.9);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.45rem 0;
+      font-size: 0.72rem;
+    }
+
+    .telemetry-topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .telemetry-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-family: var(--font-mono);
+      color: var(--text-white);
+      letter-spacing: 0.04em;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 0.22rem 0.7rem;
+      border-radius: 999px;
+      font-weight: 500;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--emerald-neon);
+      box-shadow: 0 0 10px var(--emerald-neon);
+      position: relative;
+      display: inline-block;
+    }
+
+    .pulse-dot::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1.5px solid var(--emerald-neon);
+      animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(0.7);
+        opacity: 0.9;
+      }
+      80%, 100% {
+        transform: scale(1.85);
+        opacity: 0;
+      }
+    }
+
+    .telemetry-meta {
+      font-family: var(--font-mono);
+      color: var(--text-slate);
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .telemetry-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11, 15, 23, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 74px;
+      gap: 1rem;
+    }
+
+    .brand-logo {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-bright);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      white-space: nowrap;
+    }
+
+    .brand-logo .bracket {
+      color: var(--azure-light);
+    }
+
+    .brand-logo .slash {
+      color: var(--emerald-neon);
+      margin: 0 0.15rem;
+    }
+
+    .brand-logo .sub {
+      color: var(--text-slate);
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-slate);
+      transition: color 0.2s ease;
+      position: relative;
+      padding: 0.25rem 0;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-bright);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--azure-light);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: linear-gradient(135deg, var(--azure-primary) 0%, #005A9E 100%);
+      color: #ffffff;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      border: 1px solid rgba(43, 136, 216, 0.6);
+      box-shadow: 0 4px 20px rgba(0, 120, 212, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--azure-light) 0%, var(--azure-primary) 100%);
+      box-shadow: 0 6px 26px rgba(0, 120, 212, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: rgba(15, 23, 42, 0.75);
+      color: var(--text-white);
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 0.85rem;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--azure-light);
+      background: rgba(0, 120, 212, 0.12);
+      color: #ffffff;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-white);
+      padding: 0.45rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .mobile-nav-drawer {
+      display: none;
+      background: rgba(8, 12, 20, 0.97);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1.25rem 1.5rem;
+    }
+
+    .mobile-nav-drawer.open {
+      display: block;
+    }
+
+    .mobile-nav-drawer ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .mobile-nav-drawer a {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-slate);
+    }
+
+    /* 2. HERO SECTION */
+    .hero-section {
+      padding: 5.5rem 0 4.5rem;
+      position: relative;
+    }
+
+    .hero-glow-orb {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 760px;
+      height: 360px;
+      background: radial-gradient(ellipse at center, rgba(0, 120, 212, 0.15) 0%, rgba(16, 185, 129, 0.04) 45%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .hero-content {
+      max-width: 920px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--azure-light);
+      background: rgba(0, 120, 212, 0.1);
+      border: 1px solid rgba(0, 120, 212, 0.32);
+      padding: 0.4rem 0.95rem;
+      border-radius: 999px;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 0 24px rgba(0, 120, 212, 0.15);
+    }
+
+    .hero-headline {
+      font-size: clamp(2.25rem, 5vw, 3.85rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+      color: var(--text-bright);
+      margin-bottom: 1.5rem;
+      background: linear-gradient(180deg, #FFFFFF 0%, #CBD5E1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-headline .accent-gradient {
+      background: linear-gradient(135deg, #38BDF8 0%, var(--azure-primary) 55%, var(--emerald-neon) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subheadline {
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      color: var(--text-slate);
+      max-width: 760px;
+      margin: 0 auto 2.5rem;
+      font-weight: 400;
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 4rem;
+    }
+
+    /* 4 Executive Metric Badges Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .metric-card {
+      padding: 1.6rem 1.35rem;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-top: 2px solid rgba(0, 120, 212, 0.4);
+    }
+
+    .metric-card:nth-child(even) {
+      border-top-color: rgba(16, 185, 129, 0.45);
+    }
+
+    .metric-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.65rem;
+    }
+
+    .metric-value {
+      font-family: var(--font-mono);
+      font-size: clamp(1.8rem, 2.8vw, 2.35rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-bright);
+      line-height: 1.1;
+    }
+
+    .metric-card:nth-child(1) .metric-value,
+    .metric-card:nth-child(3) .metric-value {
+      color: #38BDF8;
+    }
+
+    .metric-card:nth-child(2) .metric-value,
+    .metric-card:nth-child(4) .metric-value {
+      color: var(--emerald-neon);
+    }
+
+    .metric-icon {
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .metric-label {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-white);
+      margin-bottom: 0.25rem;
+    }
+
+    .metric-sub {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--text-slate);
+    }
+
+    /* Section Headers */
+    section {
+      padding: 5.5rem 0;
+      position: relative;
+    }
+
+    .section-header {
+      margin-bottom: 3.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--azure-light);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-eyebrow::before {
+      content: '//';
+      color: var(--emerald-neon);
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-bright);
+    }
+
+    .section-desc {
+      color: var(--text-slate);
+      max-width: 680px;
+      font-size: 1.02rem;
+    }
+
+    /* 3. SECTION 01 — PRODUCTIZED B2B SERVICE CATALOG (2x2 Grid) */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      padding: 2.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .service-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .service-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: rgba(0, 120, 212, 0.12);
+      border: 1px solid rgba(0, 120, 212, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--azure-light);
+      flex-shrink: 0;
+    }
+
+    .service-index {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+    }
+
+    .service-title {
+      font-size: 1.32rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-bright);
+      margin-bottom: 0.75rem;
+    }
+
+    .service-details {
+      color: var(--text-slate);
+      font-size: 0.96rem;
+      line-height: 1.65;
+    }
+
+    .service-footer {
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .engagement-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .engagement-model {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--emerald-neon);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* 4. SECTION 02 — PRODUCTION CASE STUDIES (3 Cards) */
+    .case-studies-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .case-card {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .case-tag-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .case-id {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--azure-light);
+      background: rgba(0, 120, 212, 0.12);
+      border: 1px solid rgba(0, 120, 212, 0.28);
+      padding: 0.22rem 0.65rem;
+      border-radius: 6px;
+    }
+
+    .case-status {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--emerald-neon);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .case-title {
+      font-size: 1.22rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-bright);
+      margin-bottom: 1.25rem;
+      line-height: 1.35;
+    }
+
+    .case-block {
+      margin-bottom: 1rem;
+      padding-left: 0.85rem;
+      border-left: 2px solid var(--border-subtle);
+    }
+
+    .case-block.problem {
+      border-left-color: #F59E0B;
+    }
+
+    .case-block.solution {
+      border-left-color: var(--azure-light);
+    }
+
+    .case-block.outcome {
+      border-left-color: var(--emerald-neon);
+      margin-bottom: 0;
+      background: rgba(16, 185, 129, 0.05);
+      padding: 0.75rem 0.85rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .case-block-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+
+    .case-block.problem .case-block-label {
+      color: #FBBF24;
+    }
+
+    .case-block.solution .case-block-label {
+      color: #38BDF8;
+    }
+
+    .case-block.outcome .case-block-label {
+      color: var(--emerald-neon);
+    }
+
+    .case-block-text {
+      font-size: 0.9rem;
+      color: var(--text-slate);
+      line-height: 1.55;
+    }
+
+    .case-block.outcome .case-block-text {
+      color: var(--text-bright);
+      font-weight: 500;
+    }
+
+    /* 5. SECTION 03 — INTERACTIVE CLI TERMINAL & ACCREDITED STACK */
+    .terminal-wrapper {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      background: var(--bg-terminal);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 120, 212, 0.12);
+    }
+
+    .terminal-topbar {
+      grid-column: 1 / -1;
+      background: #0F172A;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .window-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .win-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .win-dot.close { background: #EF4444; }
+    .win-dot.min { background: #F59E0B; }
+    .win-dot.max { background: #10B981; }
+
+    .terminal-title {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-slate);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .terminal-status-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--emerald-neon);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 0.15rem 0.55rem;
+      border-radius: 4px;
+    }
+
+    .terminal-sidebar {
+      background: rgba(15, 23, 42, 0.45);
+      border-right: 1px solid var(--border-subtle);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .sidebar-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .cmd-preset-btn {
+      width: 100%;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-white);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 0.7rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .cmd-preset-btn:hover,
+    .cmd-preset-btn.active {
+      background: rgba(0, 120, 212, 0.15);
+      border-color: var(--azure-light);
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(0, 120, 212, 0.2);
+    }
+
+    .cmd-preset-btn .prompt-arrow {
+      color: var(--emerald-neon);
+      font-weight: 700;
+    }
+
+    .sidebar-helper {
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .terminal-main {
+      display: flex;
+      flex-direction: column;
+      height: 430px;
+      background: var(--bg-terminal);
+    }
+
+    .terminal-output {
+      flex: 1;
+      padding: 1.35rem 1.5rem;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      line-height: 1.65;
+      color: var(--text-white);
+    }
+
+    .terminal-output::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .terminal-output::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+    }
+
+    .term-line {
+      margin-bottom: 0.5rem;
+      word-break: break-word;
+    }
+
+    .term-prompt {
+      color: #38BDF8;
+      font-weight: 600;
+    }
+
+    .term-cmd {
+      color: var(--emerald-neon);
+      font-weight: 600;
+    }
+
+    .term-box {
+      background: rgba(15, 23, 42, 0.65);
+      border-left: 3px solid var(--azure-primary);
+      padding: 0.85rem 1rem;
+      margin: 0.65rem 0 1.1rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .term-success {
+      color: var(--emerald-neon);
+    }
+
+    .term-azure {
+      color: #38BDF8;
+    }
+
+    .term-muted {
+      color: var(--text-slate);
+    }
+
+    .terminal-input-bar {
+      border-top: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.4);
+      padding: 0.7rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+    }
+
+    .terminal-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--emerald-neon);
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+    }
+
+    /* Accredited Certifications Grid */
+    .certifications-subsection {
+      margin-top: 4.5rem;
+    }
+
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-top: 1.75rem;
+    }
+
+    .cert-card {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .cert-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cert-badge-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--emerald-neon);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cert-verified {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--emerald-neon);
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .cert-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      line-height: 1.35;
+    }
+
+    .cert-issuer {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--text-slate);
+    }
+
+    /* 6. FOOTER & CONTACT ANCHOR */
+    footer.site-footer {
+      padding: 5rem 0 3rem;
+      border-top: 1px solid var(--border-subtle);
+      background: linear-gradient(180deg, rgba(11, 15, 23, 0) 0%, rgba(8, 12, 20, 0.95) 100%);
+    }
+
+    .contact-cta-box {
+      padding: 3rem;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(8, 12, 20, 0.92) 100%);
+      border: 1px solid rgba(0, 120, 212, 0.35);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 120, 212, 0.12);
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2.5rem;
+      align-items: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .contact-headline {
+      font-size: clamp(1.75rem, 3vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-bright);
+      margin-bottom: 0.85rem;
+    }
+
+    .contact-sub {
+      color: var(--text-slate);
+      font-size: 1rem;
+      margin-bottom: 1.75rem;
+      max-width: 540px;
+    }
+
+    .architect-card {
+      background: rgba(11, 15, 23, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .architect-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .architect-role {
+      color: var(--azure-light);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .contact-detail-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-white);
+      padding: 0.55rem 0.75rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+    }
+
+    .contact-detail-row a:hover {
+      color: var(--emerald-neon);
+    }
+
+    .copy-btn {
+      margin-left: auto;
+      background: rgba(0, 120, 212, 0.15);
+      border: 1px solid rgba(0, 120, 212, 0.35);
+      color: var(--text-bright);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--azure-primary);
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1080px) {
+      .metrics-grid,
+      .cert-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .case-studies-grid {
+        grid-template-columns: 1fr;
+      }
+      .terminal-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .terminal-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .contact-cta-box {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .nav-links,
+      .nav-cta-desktop,
+      .telemetry-meta {
+        display: none;
+      }
+      .mobile-menu-btn {
+        display: inline-flex;
+      }
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .metrics-grid,
+      .cert-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-section {
+        padding: 3.5rem 0 3rem;
+      }
+      .contact-cta-box {
+        padding: 1.75rem 1.25rem;
+      }
+      .brand-logo .sub {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. LIVE TELEMETRY BAR -->
+  <div class="telemetry-topbar">
+    <div class="container telemetry-topbar-inner">
+      <div class="telemetry-pill">
+        <span class="pulse-dot"></span>
+        <span>ONLINE // TORONTO, ON // B2B ADVISORY &amp; INFRASTRUCTURE</span>
+      </div>
+      <div class="telemetry-meta">
+        <span><i data-lucide="shield-check" style="width:14px;height:14px;color:#10B981;"></i> ZERO-TRUST ENFORCED</span>
+        <span><i data-lucide="cpu" style="width:14px;height:14px;color:#2B88D8;"></i> SOVEREIGN AI READY</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SITE HEADER -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo" aria-label="Apex Technical Ventures Inc.">
+        <span><span class="bracket">[</span>APEX<span class="bracket">]</span></span>
+        <span class="slash">//</span>
+        <span class="sub">TECHNICAL VENTURES INC.</span>
+      </a>
+
+      <nav aria-label="Primary Navigation">
+        <ul class="nav-links">
+          <li><a href="#services">01. Services</a></li>
+          <li><a href="#case-studies">02. Case Studies</a></li>
+          <li><a href="#terminal">03. CLI Console</a></li>
+          <li><a href="#certifications">04. Certifications</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-cta-desktop">
+        <a href="#contact" class="btn-primary">
+          <span>Request Architecture Review</span>
+          <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+        </a>
+      </div>
+
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Menu">
+        <i data-lucide="menu" style="width:22px;height:22px;"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+      <ul>
+        <li><a href="#services" class="mobile-link">01. Services</a></li>
+        <li><a href="#case-studies" class="mobile-link">02. Case Studies</a></li>
+        <li><a href="#terminal" class="mobile-link">03. CLI Console</a></li>
+        <li><a href="#certifications" class="mobile-link">04. Certifications</a></li>
+      </ul>
+      <a href="#contact" class="btn-primary mobile-link" style="width:100%;justify-content:center;">
+        <span>Request Architecture Review</span>
+        <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- 2. HERO SECTION -->
+    <section class="hero-section">
+      <div class="hero-glow-orb"></div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <i data-lucide="terminal" style="width:14px;height:14px;"></i>
+            <span>ENTERPRISE INFRASTRUCTURE &amp; SOVEREIGN CLOUD ARCHITECTURE</span>
+          </div>
+
+          <h1 class="hero-headline">
+            Zero-Trust Cloud Architecture, <span class="accent-gradient">Security Hardening</span> &amp; Sovereign Local AI
+          </h1>
+
+          <p class="hero-subheadline">
+            Bridging enterprise identity, Azure hybrid perimeters, and air-gapped LLM deployments for regulated Canadian SMBs and mid-market enterprises.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#contact" class="btn-primary">
+              <i data-lucide="shield" style="width:17px;height:17px;"></i>
+              <span>Request Architecture Review</span>
+            </a>
+            <a href="#terminal" class="btn-secondary">
+              <i data-lucide="terminal-square" style="width:17px;height:17px;color:#00E6A2;"></i>
+              <span>Launch ATV_Console_v2.6</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4 Executive Metric Badges -->
+        <div class="metrics-grid">
+          <div class="glass-card metric-card">
+            <div class="metric-top">
+              <span class="metric-value">+31%</span>
+              <span class="metric-icon"><i data-lucide="trending-up" style="width:18px;height:18px;color:#38BDF8;"></i></span>
+            </div>
+            <div>
+              <div class="metric-label">Azure Secure Score Elevation</div>
+              <div class="metric-sub">Verified Baseline: 51% → 82%</div>
+            </div>
+          </div>
+
+          <div class="glass-card metric-card">
+            <div class="metric-top">
+              <span class="metric-value">600+</span>
+              <span class="metric-icon"><i data-lucide="bot" style="width:18px;height:18px;color:#00E6A2;"></i></span>
+            </div>
+            <div>
+              <div class="metric-label">Global Endpoints Automated</div>
+              <div class="metric-sub">Self-Healing Datto RMM Fleet</div>
+            </div>
+          </div>
+
+          <div class="glass-card metric-card">
+            <div class="metric-top">
+              <span class="metric-value">58%</span>
+              <span class="metric-icon"><i data-lucide="coins" style="width:18px;height:18px;color:#38BDF8;"></i></span>
+            </div>
+            <div>
+              <div class="metric-label">CSP Licensing Margin Capture</div>
+              <div class="metric-sub">Cloud FinOps &amp; Seat Telemetry</div>
+            </div>
+          </div>
+
+          <div class="glass-card metric-card">
+            <div class="metric-top">
+              <span class="metric-value">10 Yrs</span>
+              <span class="metric-icon"><i data-lucide="server" style="width:18px;height:18px;color:#00E6A2;"></i></span>
+            </div>
+            <div>
+              <div class="metric-label">IT Tenure</div>
+              <div class="metric-sub">8+ Yrs Enterprise &amp; MSP Operations</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SECTION 01 — PRODUCTIZED B2B SERVICE CATALOG -->
+    <section id="services">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">SECTION 01 // ARCHITECTURAL CAPABILITIES</span>
+          <h2 class="section-title">Productized B2B Service Catalog</h2>
+          <p class="section-desc">
+            Precision-engineered engagements built for Canadian enterprises requiring airtight compliance, sovereign AI infrastructure, and resilient cloud perimeters.
+          </p>
+        </div>
+
+        <div class="services-grid">
+          <!-- Service 1 -->
+          <article class="glass-card service-card">
+            <div>
+              <div class="service-header">
+                <div class="service-icon-box">
+                  <i data-lucide="brain-circuit" style="width:24px;height:24px;"></i>
+                </div>
+                <span class="service-index">ARCH // 01</span>
+              </div>
+              <h3 class="service-title">Sovereign AI &amp; Air-Gapped RAG Appliances</h3>
+              <p class="service-details">
+                On-premise air-gapped local LLM deployments (Llama 3 / Mistral) for regulated legal, accounting, and health practices needing zero-leakage CRA and compliance querying.
+              </p>
+            </div>
+            <div class="service-footer">
+              <div>
+                <span class="engagement-label">Engagement Model</span>
+                <span class="engagement-model">
+                  <i data-lucide="check-circle-2" style="width:15px;height:15px;"></i>
+                  Custom Enterprise Deployment &amp; Monthly Advisory
+                </span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Service 2 -->
+          <article class="glass-card service-card">
+            <div>
+              <div class="service-header">
+                <div class="service-icon-box">
+                  <i data-lucide="lock-keyhole" style="width:24px;height:24px;"></i>
+                </div>
+                <span class="service-index">ARCH // 02</span>
+              </div>
+              <h3 class="service-title">M365 Copilot-Readiness &amp; Zero-Trust Hardening</h3>
+              <p class="service-details">
+                Purview DLP, Intune MAM/MDM, Conditional Access policies, and Entra ID identity boundary enforcement.
+              </p>
+            </div>
+            <div class="service-footer">
+              <div>
+                <span class="engagement-label">Engagement Model</span>
+                <span class="engagement-model">
+                  <i data-lucide="check-circle-2" style="width:15px;height:15px;"></i>
+                  Fixed-Scope Security Elevation Audit
+                </span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Service 3 -->
+          <article class="glass-card service-card">
+            <div>
+              <div class="service-header">
+                <div class="service-icon-box">
+                  <i data-lucide="radar" style="width:24px;height:24px;"></i>
+                </div>
+                <span class="service-index">ARCH // 03</span>
+              </div>
+              <h3 class="service-title">Cloud FinOps &amp; Licensing Optimization ("Bounty Hunter")</h3>
+              <p class="service-details">
+                Uncovering orphaned Azure resources, over-provisioned VMs, and CSP license misallocations.
+              </p>
+            </div>
+            <div class="service-footer">
+              <div>
+                <span class="engagement-label">Engagement Model</span>
+                <span class="engagement-model">
+                  <i data-lucide="check-circle-2" style="width:15px;height:15px;"></i>
+                  100% Performance-Based (20%–30% Share of Verified 12-Month Cloud Savings)
+                </span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Service 4 -->
+          <article class="glass-card service-card">
+            <div>
+              <div class="service-header">
+                <div class="service-icon-box">
+                  <i data-lucide="life-buoy" style="width:24px;height:24px;"></i>
+                </div>
+                <span class="service-index">ARCH // 04</span>
+              </div>
+              <h3 class="service-title">Fractional Infrastructure Leadership &amp; MSP Rescue</h3>
+              <p class="service-details">
+                Parachuting into failing MSP deployments as a Tier-3 technical cleaner; providing strategic IT architecture oversight.
+              </p>
+            </div>
+            <div class="service-footer">
+              <div>
+                <span class="engagement-label">Engagement Model</span>
+                <span class="engagement-model">
+                  <i data-lucide="check-circle-2" style="width:15px;height:15px;"></i>
+                  Monthly Advisory Retainer &amp; Incident Response
+                </span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. SECTION 02 — PRODUCTION CASE STUDIES -->
+    <section id="case-studies">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">SECTION 02 // VERIFIED DEPLOYMENTS</span>
+          <h2 class="section-title">Production Case Studies</h2>
+          <p class="section-desc">
+            Battle-tested infrastructure remediation across hybrid cloud perimeters, cryptographic wireless identity, and autonomous fleet management.
+          </p>
+        </div>
+
+        <div class="case-studies-grid">
+          <!-- Case 01 -->
+          <article class="glass-card case-card">
+            <div>
+              <div class="case-tag-row">
+                <span class="case-id">CASE 01 // AZURE SQL</span>
+                <span class="case-status">
+                  <span class="pulse-dot" style="width:6px;height:6px;"></span>
+                  SOC2 / PIPEDA
+                </span>
+              </div>
+              <h3 class="case-title">Cloud Database Perimeter Isolation</h3>
+
+              <div class="case-block problem">
+                <span class="case-block-label">Problem</span>
+                <p class="case-block-text">
+                  Publicly accessible Azure SQL databases exposing client financial records.
+                </p>
+              </div>
+
+              <div class="case-block solution">
+                <span class="case-block-label">Solution</span>
+                <p class="case-block-text">
+                  Implemented Azure SQL Private Link, disabled public network access, and routed traffic through a FortiGate IPsec tunnel.
+                </p>
+              </div>
+            </div>
+
+            <div class="case-block outcome">
+              <span class="case-block-label">Verified Outcome</span>
+              <p class="case-block-text">
+                Zero public exposure, strict SOC2/PIPEDA compliance.
+              </p>
+            </div>
+          </article>
+
+          <!-- Case 02 -->
+          <article class="glass-card case-card">
+            <div>
+              <div class="case-tag-row">
+                <span class="case-id">CASE 02 // 802.1X PKI</span>
+                <span class="case-status">
+                  <span class="pulse-dot" style="width:6px;height:6px;"></span>
+                  ZERO-TRUST LAN
+                </span>
+              </div>
+              <h3 class="case-title">Greenfield Hybrid Identity &amp; 802.1X EAP-TLS PKI</h3>
+
+              <div class="case-block problem">
+                <span class="case-block-label">Problem</span>
+                <p class="case-block-text">
+                  Unsecured legacy Wi-Fi networks using pre-shared keys across multi-office sites.
+                </p>
+              </div>
+
+              <div class="case-block solution">
+                <span class="case-block-label">Solution</span>
+                <p class="case-block-text">
+                  Deployed Windows Server 2025 Read-Only Domain Controllers (RODC) with Active Directory Certificate Services (AD CS) PKI for certificate-based 802.1X wireless auth.
+                </p>
+              </div>
+            </div>
+
+            <div class="case-block outcome">
+              <span class="case-block-label">Verified Outcome</span>
+              <p class="case-block-text">
+                Instant rogue device mitigation across all corporate sites.
+              </p>
+            </div>
+          </article>
+
+          <!-- Case 03 -->
+          <article class="glass-card case-card">
+            <div>
+              <div class="case-tag-row">
+                <span class="case-id">CASE 03 // RMM FLEET</span>
+                <span class="case-status">
+                  <span class="pulse-dot" style="width:6px;height:6px;"></span>
+                  600+ ENDPOINTS
+                </span>
+              </div>
+              <h3 class="case-title">Global Fleet Self-Healing Automation</h3>
+
+              <div class="case-block problem">
+                <span class="case-block-label">Problem</span>
+                <p class="case-block-text">
+                  High ticket volumes for routine endpoint failures across 600+ machines.
+                </p>
+              </div>
+
+              <div class="case-block solution">
+                <span class="case-block-label">Solution</span>
+                <p class="case-block-text">
+                  Engineered self-healing Datto RMM PowerShell remediation scripts for print spooler clears, disk cleanups, and service restarts.
+                </p>
+              </div>
+            </div>
+
+            <div class="case-block outcome">
+              <span class="case-block-label">Verified Outcome</span>
+              <p class="case-block-text">
+                72% reduction in L1/L2 helpdesk tickets.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. SECTION 03 — INTERACTIVE CLI TERMINAL & ACCREDITED STACK -->
+    <section id="terminal">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">SECTION 03 // LIVE TELEMETRY &amp; VERIFICATION</span>
+          <h2 class="section-title">Interactive Architecture CLI &amp; Accredited Stack</h2>
+          <p class="section-desc">
+            Inspect our verified credentials, security posture benchmarks, and deployment records directly through the Apex PowerShell / Azure CLI console.
+          </p>
+        </div>
+
+        <!-- Interactive Terminal Widget -->
+        <div class="terminal-wrapper">
+          <div class="terminal-topbar">
+            <div class="window-controls">
+              <span class="win-dot close"></span>
+              <span class="win-dot min"></span>
+              <span class="win-dot max"></span>
+            </div>
+            <div class="terminal-title">
+              <i data-lucide="terminal" style="width:14px;height:14px;color:#38BDF8;"></i>
+              <span>powershell.exe - ATV_Console_v2.6</span>
+            </div>
+            <span class="terminal-status-tag">TLS 1.3 // ENCRYPTED</span>
+          </div>
+
+          <!-- Side Pane with Clickable Preset Buttons -->
+          <aside class="terminal-sidebar" aria-label="CLI Command Presets">
+            <div class="sidebar-label">Preset Modules</div>
+            <button class="cmd-preset-btn active" data-cmd="atv --verify-credentials">
+              <span>atv --verify-credentials</span>
+              <span class="prompt-arrow">›</span>
+            </button>
+            <button class="cmd-preset-btn" data-cmd="atv --secure-score">
+              <span>atv --secure-score</span>
+              <span class="prompt-arrow">›</span>
+            </button>
+            <button class="cmd-preset-btn" data-cmd="atv --case-studies">
+              <span>atv --case-studies</span>
+              <span class="prompt-arrow">›</span>
+            </button>
+            <button class="cmd-preset-btn" data-cmd="atv --contact">
+              <span>atv --contact</span>
+              <span class="prompt-arrow">›</span>
+            </button>
+            <button class="cmd-preset-btn" data-cmd="clear" style="margin-top:0.35rem;color:var(--text-slate);">
+              <span>clear-host</span>
+              <span class="prompt-arrow" style="color:var(--text-slate);">×</span>
+            </button>
+
+            <div class="sidebar-helper">
+              Click any preset module above or type <span style="color:#00E6A2;">help</span> inside the interactive prompt below.
+            </div>
+          </aside>
+
+          <!-- Console Output & Input -->
+          <div class="terminal-main">
+            <div class="terminal-output" id="terminalOutput" role="log" aria-live="polite"></div>
+            <form class="terminal-input-bar" id="terminalForm" autocomplete="off">
+              <span class="term-prompt">PS C:\Apex\Toronto&gt;</span>
+              <input
+                type="text"
+                id="terminalInput"
+                class="terminal-input"
+                placeholder="Type a command (e.g., atv --secure-score) and press Enter..."
+                aria-label="Terminal Command Input"
+              />
+            </form>
+          </div>
+        </div>
+
+        <!-- Accredited Certifications Grid -->
+        <div id="certifications" class="certifications-subsection">
+          <div class="section-header" style="margin-bottom: 1.5rem;">
+            <span class="section-eyebrow">ACCREDITED CREDENTIALS</span>
+            <h3 class="section-title" style="font-size: clamp(1.4rem, 2.5vw, 1.9rem);">Enterprise Certifications &amp; Governance</h3>
+          </div>
+
+          <div class="cert-grid">
+            <div class="glass-card cert-card">
+              <div class="cert-top">
+                <div class="cert-badge-icon">
+                  <i data-lucide="award" style="width:22px;height:22px;"></i>
+                </div>
+                <span class="cert-verified">
+                  <i data-lucide="check" style="width:12px;height:12px;"></i> VERIFIED
+                </span>
+              </div>
+              <div>
+                <div class="cert-name">Microsoft 365 Certified: Enterprise Administrator Expert</div>
+                <div class="cert-issuer">Microsoft // Identity &amp; Zero-Trust</div>
+              </div>
+            </div>
+
+            <div class="glass-card cert-card">
+              <div class="cert-top">
+                <div class="cert-badge-icon">
+                  <i data-lucide="server-cog" style="width:22px;height:22px;"></i>
+                </div>
+                <span class="cert-verified">
+                  <i data-lucide="check" style="width:12px;height:12px;"></i> VERIFIED
+                </span>
+              </div>
+              <div>
+                <div class="cert-name">MCSE: Core Infrastructure</div>
+                <div class="cert-issuer">Microsoft Certified Solutions Expert</div>
+              </div>
+            </div>
+
+            <div class="glass-card cert-card">
+              <div class="cert-top">
+                <div class="cert-badge-icon">
+                  <i data-lucide="terminal-square" style="width:22px;height:22px;"></i>
+                </div>
+                <span class="cert-verified">
+                  <i data-lucide="check" style="width:12px;height:12px;"></i> VERIFIED
+                </span>
+              </div>
+              <div>
+                <div class="cert-name">Datto RMM Certified Administrator</div>
+                <div class="cert-issuer">Autonomous Fleet &amp; PowerShell Engineering</div>
+              </div>
+            </div>
+
+            <div class="glass-card cert-card">
+              <div class="cert-top">
+                <div class="cert-badge-icon">
+                  <i data-lucide="CheckCircle" style="width:22px;height:22px;"></i>
+                </div>
+                <span class="cert-verified">
+                  <i data-lucide="check" style="width:12px;height:12px;"></i> VERIFIED
+                </span>
+              </div>
+              <div>
+                <div class="cert-name">ITIL 4 Foundation</div>
+                <div class="cert-issuer">AXELOS // Enterprise Service Management</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 6. FOOTER & CONTACT ANCHOR -->
+  <footer id="contact" class="site-footer">
+    <div class="container">
+      <div class="contact-cta-box">
+        <div>
+          <span class="section-eyebrow" style="margin-bottom:0.75rem;">INITIATE ADVISORY DISPATCH</span>
+          <h2 class="contact-headline">Ready to Elevate Your Security Posture?</h2>
+          <p class="contact-sub">
+            Schedule a confidential architecture review covering Entra ID boundaries, Azure hybrid perimeters, Cloud FinOps savings, or air-gapped local LLM appliances.
+          </p>
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+            <a href="mailto:khalid@apextechnicalventures.com?subject=Architecture%20Review%20Inquiry%20-%20Apex%20Technical%20Ventures" class="btn-primary">
+              <i data-lucide="mail" style="width:17px;height:17px;"></i>
+              <span>Dispatch Architecture Inquiry</span>
+            </a>
+            <a href="#terminal" class="btn-secondary">
+              <i data-lucide="code-2" style="width:17px;height:17px;color:#38BDF8;"></i>
+              <span>Run CLI Verification</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="architect-card">
+          <div>
+            <div class="architect-name">
+              <span>Khalid</span>
+              <span style="color:var(--text-muted);">|</span>
+              <span style="font-size:0.95rem;font-weight:500;color:var(--text-white);">Principal Systems Architect</span>
+            </div>
+            <div class="architect-role">APEX TECHNICAL VENTURES INC.</div>
+          </div>
+
+          <div class="contact-detail-row">
+            <i data-lucide="at-sign" style="width:16px;height:16px;color:#38BDF8;flex-shrink:0;"></i>
+            <a href="mailto:khalid@apextechnicalventures.com" id="emailText">khalid@apextechnicalventures.com</a>
+            <button class="copy-btn" id="copyEmailBtn" type="button">COPY</button>
+          </div>
+
+          <div class="contact-detail-row">
+            <i data-lucide="map-pin" style="width:16px;height:16px;color:#00E6A2;flex-shrink:0;"></i>
+            <span>Toronto, ON // Durham Region</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Apex Technical Ventures Inc. All rights reserved.</div>
+        <div>[APEX] // ZERO-TRUST CLOUD &amp; SOVEREIGN AI ARCHITECTURE</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- INTERACTIVE SCRIPTS -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    if (mobileMenuBtn) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileNavDrawer.classList.toggle('open');
+      });
+    }
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNavDrawer.classList.remove('open');
+      });
+    });
+
+    // Subtle radial mouse glow on glassmorphic cards
+    document.querySelectorAll('.glass-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+
+    // Copy Email Button
+    const copyEmailBtn = document.getElementById('copyEmailBtn');
+    if (copyEmailBtn) {
+      copyEmailBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText('khalid@apextechnicalventures.com').then(() => {
+          const original = copyEmailBtn.textContent;
+          copyEmailBtn.textContent = 'COPIED ✓';
+          copyEmailBtn.style.background = '#10B981';
+          copyEmailBtn.style.color = '#080C14';
+          setTimeout(() => {
+            copyEmailBtn.textContent = original;
+            copyEmailBtn.style.background = '';
+            copyEmailBtn.style.color = '';
+          }, 2000);
+        });
+      });
+    }
+
+    // Interactive CLI Simulator (powershell.exe - ATV_Console_v2.6)
+    const terminalOutput = document.getElementById('terminalOutput');
+    const terminalForm = document.getElementById('terminalForm');
+    const terminalInput = document.getElementById('terminalInput');
+    const presetButtons = document.querySelectorAll('.cmd-preset-btn');
+
+    const commandResponses = {
+      'atv --verify-credentials': `
+<div class="term-box">
+  <div class="term-azure">[ATV_AUTH_MODULE] Verifying Principal Architect Credentials...</div>
+  <div class="term-muted">----------------------------------------------------------------</div>
+  <div><span class="term-success">✔ [VERIFIED]</span> Microsoft 365 Certified: Enterprise Administrator Expert</div>
+  <div><span class="term-success">✔ [VERIFIED]</span> MCSE: Core Infrastructure</div>
+  <div><span class="term-success">✔ [VERIFIED]</span> Datto RMM Certified Administrator</div>
+  <div><span class="term-success">✔ [VERIFIED]</span> ITIL 4 Foundation</div>
+  <div class="term-muted">----------------------------------------------------------------</div>
+  <div>TENURE: <span class="term-azure">10 Years IT Architecture</span> // <span class="term-success">8+ Years Enterprise &amp; MSP Ops</span></div>
+  <div>STATUS: <span class="term-success">CLEARANCE ACTIVE // TORONTO &amp; DURHAM REGION</span></div>
+</div>`,
+
+      'atv --secure-score': `
+<div class="term-box">
+  <div class="term-azure">[AZURE_DEFENDER_TELEMETRY] Auditing Tenant Posture &amp; FinOps Metrics...</div>
+  <div class="term-muted">----------------------------------------------------------------</div>
+  <div>• Azure Secure Score Elevation : <span class="term-success">51% ➔ 82% (+31% Net Delta)</span></div>
+  <div>• Identity Boundary            : <span class="term-azure">Entra ID Conditional Access + Purview DLP</span></div>
+  <div>• Fleet Self-Healing RMM       : <span class="term-success">600+ Global Endpoints Automated</span></div>
+  <div>• CSP Licensing Margin Capture : <span class="term-azure">58% Verified Efficiency</span></div>
+  <div class="term-muted">----------------------------------------------------------------</div>
+  <div>RESULT: <span class="term-success">COPILOT-READY &amp; ZERO-TRUST HARDENED</span></div>
+</div>`,
+
+      'atv --case-studies': `
+<div class="term-box">
+  <div class="term-azure">[DEPLOYMENT_LOG] Fetching Production Architecture Records...</div>
+  <div class="term-muted">----------------------------------------------------------------</div>
+  <div><span class="term-azure">[CASE_01]</span> Cloud Database Perimeter Isolation</div>
+  <div class="term-muted">  └─ Fix: Azure SQL Private Link + FortiGate IPsec | Outcome: <span class="term-success">SOC2/PIPEDA Compliant</span></div>
+  <div><span class="term-azure">[CASE_02]</span> Greenfield Hybrid Identity &amp; 802.1X EAP-TLS PKI</div>
+  <div class="term-muted">  └─ Fix: Windows Server 2025 RODC + AD CS PKI     | Outcome: <span class="term-success">100% Rogue Device Block</span></div>
+  <div><span class="term-azure">[CASE_03]</span> Global Fleet Self-Healing Automation</div>
+  <div class="term-muted">  └─ Fix: Datto RMM PowerShell Auto-Remediation   | Outcome: <span class="term-success">-72% L1/L2 Ticket Volume</span></div>
+</div>`,
+
+      'atv --contact': `
+<div class="term-box">
+  <div class="term-azure">[DISPATCH_CHANNEL] Direct Principal Architect Routing...</div>
+  <div class="term-muted">----------------------------------------------------------------</div>
+  <div>PRINCIPAL : <span class="term-success">Khalid | Principal Systems Architect</span></div>
+  <div>EMAIL     : <a href="mailto:khalid@apextechnicalventures.com" class="term-azure" style="text-decoration:underline;">khalid@apextechnicalventures.com</a></div>
+  <div>REGION    : <span>Toronto, ON // Durham Region</span></div>
+  <div>MODELS    : <span class="term-muted">Fixed-Scope Audit | FinOps Bounty | Monthly Retainer</span></div>
+</div>`,
+
+      'help': `
+<div class="term-box">
+  <div class="term-azure">ATV_Console_v2.6 Available Commands:</div>
+  <div>  <span class="term-success">atv --verify-credentials</span>  Display accredited Microsoft, Datto &amp; ITIL certifications</div>
+  <div>  <span class="term-success">atv --secure-score</span>        Output Azure Secure Score &amp; fleet automation metrics</div>
+  <div>  <span class="term-success">atv --case-studies</span>        Inspect production architectural deployments</div>
+  <div>  <span class="term-success">atv --contact</span>             Show Principal Systems Architect contact coordinates</div>
+  <div>  <span class="term-success">clear</span>                     Clear terminal buffer</div>
+</div>`
+    };
+
+    let typingTimeout = null;
+
+    function executeCommand(rawCmd, animateTyping = true) {
+      const cmd = rawCmd.trim().toLowerCase();
+      if (!cmd) return;
+
+      if (cmd === 'clear' || cmd === 'clear-host' || cmd === 'cls') {
+        terminalOutput.innerHTML = `<div class="term-line term-muted">Windows PowerShell // ATV_Console_v2.6 buffer cleared.</div>`;
+        return;
+      }
+
+      const promptLine = document.createElement('div');
+      promptLine.className = 'term-line';
+      promptLine.innerHTML = `<span class="term-prompt">PS C:\\Apex\\Toronto&gt;</span> <span class="term-cmd"></span>`;
+      terminalOutput.appendChild(promptLine);
+
+      const cmdSpan = promptLine.querySelector('.term-cmd');
+
+      const renderResponse = () => {
+        const responseWrapper = document.createElement('div');
+        if (commandResponses[cmd]) {
+          responseWrapper.innerHTML = commandResponses[cmd];
+        } else {
+          responseWrapper.innerHTML = `
+            <div class="term-line" style="color:#F87171;">
+              atv : The term '${rawCmd}' is not recognized. Type <span class="term-success">help</span> or click a preset command.
+            </div>`;
+        }
+        terminalOutput.appendChild(responseWrapper);
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+      };
+
+      if (animateTyping) {
+        if (typingTimeout) clearInterval(typingTimeout);
+        let i = 0;
+        typingTimeout = setInterval(() => {
+          cmdSpan.textContent += rawCmd.charAt(i);
+          i++;
+          terminalOutput.scrollTop = terminalOutput.scrollHeight;
+          if (i >= rawCmd.length) {
+            clearInterval(typingTimeout);
+            renderResponse();
+          }
+        }, 18);
+      } else {
+        cmdSpan.textContent = rawCmd;
+        renderResponse();
+      }
+    }
+
+    // Bind Preset Buttons
+    presetButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        presetButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cmd = btn.getAttribute('data-cmd');
+        executeCommand(cmd, true);
+      });
+    });
+
+    // Bind Manual Input Form
+    terminalForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const val = terminalInput.value;
+      if (!val.trim()) return;
+      terminalInput.value = '';
+      executeCommand(val, false);
+    });
+
+    // Boot Sequence on Page Load
+    window.addEventListener('DOMContentLoaded', () => {
+      terminalOutput.innerHTML = `
+        <div class="term-line term-muted">Apex Technical Ventures Inc. [Version 2.6.2026]</div>
+        <div class="term-line term-muted">(c) 2026 Apex Technical Ventures Inc. All rights reserved.</div>
+        <div class="term-line" style="margin-bottom:0.85rem;"><span class="term-success">● Connected to Sovereign Telemetry Node (yyz-tor-01.apextechnicalventures.com)</span></div>
+      `;
+      executeCommand('atv --verify-credentials', false);
+    });
+  </script>
+</body>
+</html>
