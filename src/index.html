@@ -1581,10 +1581,14 @@
               <span>atv --case-studies</span>
               <span class="prompt-arrow">›</span>
             </button>
-            <button class="cmd-preset-btn" data-cmd="atv --contact">
-              <span>atv --contact</span>
-              <span class="prompt-arrow">›</span>
-            </button>
+           <button class="cmd-preset-btn" data-cmd="atv --contact">
+           <span>atv --contact</span>
+           <span class="prompt-arrow">›</span>
+         </button>
+         <button class="cmd-preset-btn" data-cmd="atv --scan-domain microsoft.com">
+           <span>atv --scan-domain [LIVE]</span>
+           <span class="prompt-arrow">⚡</span>
+         </button>
             <button class="cmd-preset-btn" data-cmd="clear" style="margin-top:0.35rem;color:var(--text-slate);">
               <span>clear-host</span>
               <span class="prompt-arrow" style="color:var(--text-slate);">×</span>
@@ -1872,6 +1876,46 @@
 
       const renderResponse = () => {
         const responseWrapper = document.createElement('div');
+
+        // LIVE SERVERLESS NODE.JS RECON HOOK: atv --scan-domain <domain>
+        if (cmd.startsWith('atv --scan-domain')) {
+          const parts = cmd.split(/\s+/);
+          const targetDomain = parts[2] || 'microsoft.com';
+          responseWrapper.innerHTML = `<div class="term-box"><div class="term-azure">[AZURE_FUNCTION_NODE22] Executing live DNS &amp; Entra ID OIDC recon against <b>${targetDomain}</b>...</div></div>`;
+          terminalOutput.appendChild(responseWrapper);
+          terminalOutput.scrollTop = terminalOutput.scrollHeight;
+
+          fetch(`/api/scan?domain=${encodeURIComponent(targetDomain)}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.error) {
+                responseWrapper.innerHTML = `<div class="term-line" style="color:#F87171;">[ERROR] ${data.error}</div>`;
+                return;
+              }
+              const entraStatus = data.entraId ? data.entraId.status : 'Unknown';
+              const tenantId = (data.entraId && data.entraId.tenantId) ? data.entraId.tenantId : 'N/A';
+              const spf = data.emailSecurity ? data.emailSecurity.spf : 'Missing';
+              const dmarcPolicy = data.emailSecurity ? data.emailSecurity.dmarcPolicy.toUpperCase() : 'MISSING';
+
+              responseWrapper.innerHTML = `
+                <div class="term-box">
+                  <div class="term-azure">[LIVE_RECON_TELEMETRY] Target: ${data.domain} (${data.timestampUtc})</div>
+                  <div class="term-muted">----------------------------------------------------------------</div>
+                  <div>• Entra ID Federation : <span class="term-success">${entraStatus}</span></div>
+                  <div>• Tenant GUID         : <span class="term-muted">${tenantId}</span></div>
+                  <div>• SPF Record          : <span class="term-azure">${spf}</span></div>
+                  <div>• DMARC Policy        : <span class="term-success">${dmarcPolicy}</span></div>
+                  <div class="term-muted">----------------------------------------------------------------</div>
+                  <div>ESTIMATED PERIMETER SCORE: <span class="term-success">${data.postureScore}%</span> // <a href="#contact" class="term-azure" style="text-decoration:underline;">Book Remediation Audit ↗</a></div>
+                </div>`;
+              terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            })
+            .catch(() => {
+              responseWrapper.innerHTML = `<div class="term-line" style="color:#F87171;">[WARN] Recon endpoint warming up or unreachable.</div>`;
+            });
+          return;
+        }
+
         if (commandResponses[cmd]) {
           responseWrapper.innerHTML = commandResponses[cmd];
         } else {
@@ -1883,25 +1927,23 @@
         terminalOutput.appendChild(responseWrapper);
         terminalOutput.scrollTop = terminalOutput.scrollHeight;
       };
-
       if (animateTyping) {
-        if (typingTimeout) clearInterval(typingTimeout);
-        let i = 0;
-        typingTimeout = setInterval(() => {
-          cmdSpan.textContent += rawCmd.charAt(i);
-          i++;
-          terminalOutput.scrollTop = terminalOutput.scrollHeight;
-          if (i >= rawCmd.length) {
-            clearInterval(typingTimeout);
-            renderResponse();
-          }
-        }, 18);
-      } else {
-        cmdSpan.textContent = rawCmd;
-        renderResponse();
-      }
-    }
-
+     if (typingTimeout) clearInterval(typingTimeout);
+     let i = 0;
+     typingTimeout = setInterval(() => {
+       cmdSpan.textContent += rawCmd.charAt(i);
+       i++;
+       terminalOutput.scrollTop = terminalOutput.scrollHeight;
+       if (i >= rawCmd.length) {
+         clearInterval(typingTimeout);
+         renderResponse();
+       }
+     }, 18);
+   } else {
+     cmdSpan.textContent = rawCmd;
+     renderResponse();
+   }
+ }
     // Bind Preset Buttons
     presetButtons.forEach(btn => {
       btn.addEventListener('click', () => {
